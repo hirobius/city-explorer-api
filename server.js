@@ -9,13 +9,16 @@ const app = express();
 
 let forecastData = [];
 
-function Forecast(date, description) {
-  this.date = date;
+function Forecast(description, date) {
   this.description = description;
+  this.date = date;
   forecastData.push(this);
 }
-
-new Forecast(weatherData.data[0].datetime, weatherData.data[0].weather.description,);
+// "description": "Low of 17.1, high of 23.6 with broken clouds",
+// "date": "2021-03-31"
+//       "low_temp": 18.1,
+//       "max_temp": 19.9,
+new Forecast(`Low of ${weatherData.data[0].low_temp}, high of ${weatherData.data[0].max_temp} with ${weatherData.data[0].weather.description}`, weatherData.data[0].datetime);
 
 // make sure your data is accessible from the React frontend
 app.use(cors());
