@@ -7,6 +7,16 @@ const cors = require('cors');
 
 const app = express();
 
+let forecastData = [];
+
+function Forecast(date, description) {
+  this.date = date;
+  this.description = description;
+  forecastData.push(this);
+}
+
+new Forecast(weatherData.data[0].datetime, weatherData.data[0].weather.description,);
+
 // make sure your data is accessible from the React frontend
 app.use(cors());
 
@@ -17,7 +27,8 @@ app.get('/', (request, response) => {
 });
 
 app.get('/weather', (request, response) => {
-  response.json(weatherData);
+  response.json(forecastData);
 });
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+
