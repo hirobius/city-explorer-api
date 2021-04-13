@@ -1,37 +1,42 @@
-const express = require('express');
-// actually use the .env file created
-require('dotenv').config();
+'use strict';
+
 // import the json data file
 const weatherData = require('./data/weather.json');
+// actually use the .env file created
+require('dotenv').config();
+// include express for the express server (require is pretty much the backend import)
+const express = require('express');
 const cors = require('cors');
-
+const { response } = require('express');
+// instantiate the express server
 const app = express();
-
-let forecastData = [];
-
-function Forecast(description, date) {
-  this.description = description;
-  this.date = date;
-  forecastData.push(this);
-}
-// "description": "Low of 17.1, high of 23.6 with broken clouds",
-// "date": "2021-03-31"
-//       "low_temp": 18.1,
-//       "max_temp": 19.9,
-new Forecast(`Low of ${weatherData.data[0].low_temp}, high of ${weatherData.data[0].max_temp} with ${weatherData.data[0].weather.description}`, weatherData.data[0].datetime);
-
 // make sure your data is accessible from the React frontend
 app.use(cors());
-
+// process.env is how you pull the PORT variable from the .env file
 const PORT = process.env.PORT || 3002;
-// response has some methods that are very helpful. i.e. send
+
 app.get('/', (request, response) => {
   response.send('Hiya!');
 });
 
+function Forecast(day, description) {
+  this.date = day.datetime;
+  this.description = day.weather.description;
+}
+
+function handleErrors() {
+  response.status(500).send('Internal error :/');
+}
+
 app.get('/weather', (request, response) => {
-  response.json(forecastData);
+  try {
+    const allForecasts = weatherData.data.map(day => new Forecast(day));
+    response.json(allForecasts);
+  } catch (error) {
+    handleErrors(errors, response);
+  }
 });
 
-app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
+// new Forecast(`Low of ${weatherData.data[0].low_temp}, high of ${weatherData.data[0].max_temp} with ${weatherData.data[0].weather.description}`, weatherData.data[0].datetime);
 
+app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
