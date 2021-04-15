@@ -12,6 +12,7 @@ const { response } = require('express');
 const app = express();
 // make sure your data is accessible from the React frontend
 app.use(cors());
+const superagent = require('superagent');
 // process.env is how you pull the PORT variable from the .env file
 const PORT = process.env.PORT || 3002;
 
@@ -37,6 +38,35 @@ app.get('/weather', (request, response) => {
   }
 });
 
-// new Forecast(`Low of ${weatherData.data[0].low_temp}, high of ${weatherData.data[0].max_temp} with ${weatherData.data[0].weather.description}`, weatherData.data[0].datetime);
+// // get images fom upsplash api
+// app.get('./images', getImages);
+
+// // upsplash callback function 
+// function getImages(request, response) {
+//   // console.log(request.query.imageSearch);
+//   const imageQuery = 'bees'; // replace bees with request.query.imageSearch
+//   const url = 'https://api.unsplash.com/search/photos';
+//   const query = {
+//     client_id: process.env.UNSPLASH_API_KEY,
+//     query: imageQuery,
+//   }
+//   superAgent
+//     .get(url)
+//     .query(query)
+//     .then(imageResults => {
+//       response.status(200).send(imageResults.body.results.map(img => new ImageObject(img)));
+//     })
+// }
+
+// things I need from
+// description
+// urls.regular
+// user.name
+
+// function ImageObject(img){
+//   this.alt = img.alt.description;
+//   this.url = img.urls.regular;
+//   this.photographer = img.user.name;
+// }
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
