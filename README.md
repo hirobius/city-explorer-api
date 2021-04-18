@@ -49,9 +49,9 @@ Estimate of time needed to complete: __45m___
 
 Start time: __0940___
 
-Finish time: _____
+Finish time: __115___
 
-Actual time needed to complete: _____
+Actual time needed to complete: ___3.25hr with breaks__
 
 ---
 

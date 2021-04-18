@@ -1,17 +1,23 @@
 'use strict';
 
 // import the json data file
-const weatherData = require('./data/weather.json');
-// actually use the .env file created
-require('dotenv').config();
+// const weatherData = require('./data/weather.json');
+
 // include express for the express server (require is pretty much the backend import)
 const express = require('express');
+
+require('dotenv').config();
+
 const cors = require('cors');
+
 const { response } = require('express');
+
 // instantiate the express server
 const app = express();
+
 // make sure your data is accessible from the React frontend
 app.use(cors());
+
 const superagent = require('superagent');
 // process.env is how you pull the PORT variable from the .env file
 const PORT = process.env.PORT || 3002;
@@ -52,12 +58,6 @@ app.get('/weather', (request, response) => {
       {date: x.valid_date,
       description: x.weather.description})))
   });
-  // try {
-  //   const allForecasts = weatherData.data.map(day => new Forecast(day));
-  //   response.json(allForecasts);
-  // } catch (error) {
-  //   handleErrors(errors, response);
-  // }
 });
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
