@@ -59,11 +59,11 @@ Name of feature: Use your constructor function to shape the API results.
 
 Estimate of time needed to complete: __1hr___
 
-Start time: _____
+Start time: __115___
 
-Finish time: _____
+Finish time: __3:24+___
 
-Actual time needed to complete: _____
+Actual time needed to complete: __paused___
 
 ---
 
@@ -88,3 +88,19 @@ Start time: _____
 Finish time: _____
 
 Actual time needed to complete: _____
+
+## Movies
+
+---
+
+Name of feature: Add an environment variable to your server named `MOVIE_API_KEY`, and use it appropriately in your code.
+
+Estimate of time needed to complete: __15m___
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+
