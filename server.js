@@ -19,7 +19,7 @@ function handleErrors() {
   response.status(500).send('Internal error :/');
 }
 
-function Forecast(day, description) {
+function Forecast(day) {
   this.date = day.datetime;
   this.description = day.weather.description;
 }
@@ -39,17 +39,14 @@ app.get('/weatherTest', (request, response) => {
 app.get('/weather', (request, response) => {
   superagent.get('https://api.weatherbit.io/v2.0/forecast/daily')
     .query({
-      //   cityName: request.query.cityName,
+      cityName: request.query.cityName,
       key: process.env.WEATHERBIT_API_KEY,
       lat: request.query.lat, // '37.1801529',
       lon: request.query.lon // '-89.3502834'
     })
     .then(weatherData => {
-      response.json(weatherData.body.data.map(x => (
-        {
-          date: x.datetime,
-          description: x.weather.description
-        })));
+      response.json(weatherData.body.data.map(day => (
+        new Forecast(day))));
     });
 });
 
