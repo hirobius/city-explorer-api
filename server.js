@@ -1,72 +1,73 @@
 'use strict';
 
-// import the json data file
-const weatherData = require('./data/weather.json');
-// actually use the .env file created
-require('dotenv').config();
-// include express for the express server (require is pretty much the backend import)
+// const weatherDataTest = require('./data/weather.json');
+// const movieDataTest = require('.data/movie.json');
+
 const express = require('express');
+require('dotenv').config();
 const cors = require('cors');
 const { response } = require('express');
-// instantiate the express server
 const app = express();
-// make sure your data is accessible from the React frontend
 app.use(cors());
 const superagent = require('superagent');
-// process.env is how you pull the PORT variable from the .env file
 const PORT = process.env.PORT || 3002;
 
 app.get('/', (request, response) => {
   response.send('Hiya!');
 });
 
-function Forecast(day, description) {
-  this.date = day.datetime;
-  this.description = day.weather.description;
-}
-
 function handleErrors() {
   response.status(500).send('Internal error :/');
 }
 
+function Forecast(day) {
+  this.date = day.datetime;
+  this.description = day.weather.description;
+}
+
+function Movie(movie) {
+  this.title = movie.title;
+  this.overview = movie.overview;
+  this.average_votes = movie.vote_average;
+  this.total_votes = movie.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+  this.popularity = movie.popularity;
+  this.released_on = movie.release_date
+}
+
+// weather test link
+// https://api.weatherbit.io/v2.0/forecast/daily?key=d11d348306704f6c860157d5a9607221&lat=37.1801529&lon=-89.3502834
+
 app.get('/weather', (request, response) => {
-  try {
-    const allForecasts = weatherData.data.map(day => new Forecast(day));
-    response.json(allForecasts);
-  } catch (error) {
-    handleErrors(errors, response);
-  }
+  superagent.get('https://api.weatherbit.io/v2.0/forecast/daily')
+    .query({
+      cityName: request.query.cityName,
+      key: process.env.WEATHERBIT_API_KEY,
+      lat: request.query.lat,
+      lon: request.query.lon,
+    })
+    .then(weatherData => {
+      response.json(weatherData.body.data.map(day => (
+        new Forecast(day))));
+    });
 });
 
-// // get images fom upsplash api
-// app.get('./images', getImages);
+// movie test link
+// https://api.themoviedb.org/3/movie/550?api_key=da385cb10f2b51116039cda212b431c5
+// 550 is fightclub
 
-// // upsplash callback function 
-// function getImages(request, response) {
-//   // console.log(request.query.imageSearch);
-//   const imageQuery = 'bees'; // replace bees with request.query.imageSearch
-//   const url = 'https://api.unsplash.com/search/photos';
-//   const query = {
-//     client_id: process.env.UNSPLASH_API_KEY,
-//     query: imageQuery,
-//   }
-//   superAgent
-//     .get(url)
-//     .query(query)
-//     .then(imageResults => {
-//       response.status(200).send(imageResults.body.results.map(img => new ImageObject(img)));
-//     })
-// }
-
-// things I need from
-// description
-// urls.regular
-// user.name
-
-// function ImageObject(img){
-//   this.alt = img.alt.description;
-//   this.url = img.urls.regular;
-//   this.photographer = img.user.name;
-// }
+app.get('/movies', (request, response) => {
+  console.log(request.query.cityName)
+  superagent.get('https://api.themoviedb.org/3/search/movie/')
+    .query({
+      api_key: process.env.MOVIES_API_KEY,
+      query: request.query.cityName
+    })
+    .then(movieData => {
+      console.log(movieData.body); // king console log
+      response.json(movieData.body.results.map(movie => (
+        new Movie(movie))));
+    });
+});
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
